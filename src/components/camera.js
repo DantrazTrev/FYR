@@ -1,3 +1,5 @@
+/* eslint no-use-before-define: 0 */ // --> OFF
+
 import React, { useEffect } from 'react';
 import * as faceapi from 'face-api.js';
 
@@ -66,7 +68,7 @@ function Camera({ videoref, handleVideoPlay, setintilaizing }) {
       ]).then(startVideo);
     };
     loadModels();
-  }, [setintilaizing, startVideo]);
+  }, [setintilaizing]);
 
   return (
     <>
