@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import * as faceapi from 'face-api.js';
 
 function Camera({ videoref, handleVideoPlay, setintilaizing }) {
-  const videoHeight = 240;
+  const videoHeight = 180;
 
-  const videoWidth = 320;
+  const videoWidth = 240;
 
   useEffect(() => {
     const loadModels = async () => {

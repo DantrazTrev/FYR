@@ -25,10 +25,12 @@ function App() {
         .withFaceExpressions();
       console.log(detection);
     }, 100);
+    player.current.play();
   };
   const changeHandler = (event) => {
     setSelectedFile(URL.createObjectURL(event.target.files[0]));
     setIsFilePicked(true);
+    setStart(true);
   };
 
   const onFileUpload = () => {
@@ -43,25 +45,31 @@ function App() {
   };
   return (
     <div id='app' className='app'>
-      <input
-        type='file'
-        id='file'
-        onChange={changeHandler}
-        accept='video/mp4'
-      />
-
-      <div className='text'>
-        Please Upload a video file
-        {/* <span aria-label='emoji' role='img' id='emoji'>
-          😐
-        </span>
-        You look <span id='textStatus'>...</span>! */}
+      <div id='preview'>
+        <div id='thumb-cont'>
+          {selectedFile && (
+            <video ref={player} height={501} width={906}>
+              <source src={selectedFile} id='video' type='video/mp4' />
+            </video>
+          )}
+        </div>
+        {!start && (
+          <div
+            style={{ display: 'flex', width: '100%', flexDirection: 'column' }}
+          >
+            <label for='file'>Choose Video</label>
+            <label for='file'>Use Link</label>
+          </div>
+        )}
+        <input
+          type='file'
+          id='file'
+          style={{ display: 'none' }}
+          onChange={changeHandler}
+          accept='video/mp4'
+        />
       </div>
-      {selectedFile && (
-        <video ref={player} autoPlay height={200} width={400}>
-          <source src={selectedFile} id='video' type='video/mp4' />
-        </video>
-      )}
+
       {start ? (
         <>
           <Camera
