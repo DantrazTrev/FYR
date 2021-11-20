@@ -1,6 +1,6 @@
 import * as faceapi from 'face-api.js';
 import './App.css';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import Camera from './components/camera';
 
 function App() {
@@ -10,7 +10,6 @@ function App() {
 
   const [start, setStart] = useState(false);
   const [selectedFile, setSelectedFile] = useState();
-  const [isFilePicked, setIsFilePicked] = useState(false);
 
   const handleVideoPlay = () => {
     setInterval(async () => {
@@ -29,20 +28,19 @@ function App() {
   };
   const changeHandler = (event) => {
     setSelectedFile(URL.createObjectURL(event.target.files[0]));
-    setIsFilePicked(true);
     setStart(true);
   };
 
-  const onFileUpload = () => {
-    const formData = new FormData();
+  // const onFileUpload = () => {
+  //   const formData = new FormData();
 
-    // Update the formData object
-    formData.append(
-      'myFile',
-      this.state.selectedFile,
-      this.state.selectedFile.name
-    );
-  };
+  //   // Update the formData object
+  //   formData.append(
+  //     'myFile',
+  //     this.state.selectedFile,
+  //     this.state.selectedFile.name
+  //   );
+  // };
   return (
     <div id='app' className='app'>
       <div id='preview'>
