@@ -1,75 +1,17 @@
 import * as faceapi from 'face-api.js';
 import './App.css';
 import { useState, useEffect, useRef } from 'react';
+import Camera from './components/camera';
 
 function App() {
-  const videoHeight = 480;
-
-  const videoWidth = 640;
   const [intilaizing, setintilaizing] = useState(false);
   const videoref = useRef();
-  const canvasref = useRef();
+  const player = useRef();
 
-  useEffect(() => {
-    const loadModels = async () => {
-      const MODEL_URL = process.env.PUBLIC_URL + '/models';
-      setintilaizing(true);
-      Promise.all([
-        faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
-        faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-        faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
-        faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL),
-      ]).then(startVideo);
-    };
-    loadModels();
-  }, []);
-  const startVideo = () => {
-    if (navigator.mediaDevices === undefined) {
-      navigator.mediaDevices = {};
-    }
+  const [start, setStart] = useState(false);
+  const [selectedFile, setSelectedFile] = useState();
+  const [isFilePicked, setIsFilePicked] = useState(false);
 
-    // Some browsers partially implement mediaDevices. We can't just assign an object
-    // with getUserMedia as it would overwrite existing properties.
-    // Here, we will just add the getUserMedia property if it's missing.
-    if (navigator.mediaDevices.getUserMedia === undefined) {
-      navigator.mediaDevices.getUserMedia = function (constraints) {
-        // First get ahold of the legacy getUserMedia, if present
-        var getUserMedia =
-          navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-
-        // Some browsers just don't implement it - return a rejected promise with an error
-        // to keep a consistent interface
-        if (!getUserMedia) {
-          return Promise.reject(
-            new Error('getUserMedia is not implemented in this browser')
-          );
-        }
-
-        // Otherwise, wrap the call to the old navigator.getUserMedia with a Promise
-        return new Promise(function (resolve, reject) {
-          getUserMedia.call(navigator, constraints, resolve, reject);
-        });
-      };
-    }
-
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then(function (stream) {
-        // Older browsers may not have srcObject
-        if ('srcObject' in videoref.current) {
-          videoref.current.srcObject = stream;
-        } else {
-          // Avoid using this in new browsers, as it is going away.
-          videoref.current.src = stream;
-        }
-        videoref.current.onloadedmetadata = function (e) {
-          videoref.current.play();
-        };
-      })
-      .catch(function (err) {
-        console.log(err.name + ': ' + err.message);
-      });
-  };
   const handleVideoPlay = () => {
     setInterval(async () => {
       if (intilaizing) {
@@ -84,18 +26,56 @@ function App() {
       console.log(detection);
     }, 100);
   };
+  const changeHandler = (event) => {
+    setSelectedFile(URL.createObjectURL(event.target.files[0]));
+    setIsFilePicked(true);
+  };
+
+  const onFileUpload = () => {
+    const formData = new FormData();
+
+    // Update the formData object
+    formData.append(
+      'myFile',
+      this.state.selectedFile,
+      this.state.selectedFile.name
+    );
+  };
   return (
-    <div className='App'>
-      <span>{intilaizing ? 'Intializing' : 'ready'}</span>
-      <video
-        ref={videoref}
-        autoPlay
-        muted
-        height={videoHeight}
-        width={videoWidth}
-        onPlay={handleVideoPlay}
+    <div id='app' className='app'>
+      <input
+        type='file'
+        id='file'
+        onChange={changeHandler}
+        accept='video/mp4'
       />
-      <canvas ref={canvasref} />
+
+      <div className='text'>
+        Please Upload a video file
+        {/* <span aria-label='emoji' role='img' id='emoji'>
+          😐
+        </span>
+        You look <span id='textStatus'>...</span>! */}
+      </div>
+      {selectedFile && (
+        <video ref={player} autoPlay height={200} width={400}>
+          <source src={selectedFile} id='video' type='video/mp4' />
+        </video>
+      )}
+      {start ? (
+        <>
+          <Camera
+            handleVideoPlay={handleVideoPlay}
+            videoref={videoref}
+            setintilaizing={setintilaizing}
+          />
+          <p className='note'>
+            You are not being recorded, it all happens in your own browser!
+          </p>
+        </>
+      ) : (
+        ''
+      )}
     </div>
   );
 }
