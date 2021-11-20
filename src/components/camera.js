@@ -18,7 +18,7 @@ function Camera({ videoref, handleVideoPlay, setintilaizing }) {
       ]).then(startVideo);
     };
     loadModels();
-  }, [setintilaizing, startVideo]);
+  }, [setintilaizing]);
   const startVideo = () => {
     if (navigator.mediaDevices === undefined) {
       navigator.mediaDevices = {};
