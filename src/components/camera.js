@@ -67,7 +67,7 @@ function Camera({ videoref, handleVideoPlay, setintilaizing }) {
       ]).then(startVideo);
     };
     loadModels();
-  }, [setintilaizing]);
+  }, [setintilaizing, videoref]);
 
   return (
     <>
