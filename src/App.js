@@ -1,6 +1,6 @@
 import * as faceapi from 'face-api.js';
 import './App.css';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import Camera from './components/camera';
 
 function App() {
