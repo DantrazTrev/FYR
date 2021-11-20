@@ -6,19 +6,6 @@ function Camera({ videoref, handleVideoPlay, setintilaizing }) {
 
   const videoWidth = 240;
 
-  useEffect(() => {
-    const loadModels = async () => {
-      const MODEL_URL = process.env.PUBLIC_URL + '/models';
-      setintilaizing(true);
-      Promise.all([
-        faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
-        faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-        faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
-        faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL),
-      ]).then(startVideo);
-    };
-    loadModels();
-  }, [setintilaizing]);
   const startVideo = () => {
     if (navigator.mediaDevices === undefined) {
       navigator.mediaDevices = {};
@@ -66,6 +53,20 @@ function Camera({ videoref, handleVideoPlay, setintilaizing }) {
         console.log(err.name + ': ' + err.message);
       });
   };
+
+  useEffect(() => {
+    const loadModels = async () => {
+      const MODEL_URL = process.env.PUBLIC_URL + '/models';
+      setintilaizing(true);
+      Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+        faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+        faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
+        faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL),
+      ]).then(startVideo);
+    };
+    loadModels();
+  }, [setintilaizing, startVideo]);
 
   return (
     <>
